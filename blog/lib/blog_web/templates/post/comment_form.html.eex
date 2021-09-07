@@ -1,0 +1,14 @@
+<%= form_for @changeset, @action, fn f -> %>
+<%= hidden_input f, :user_id, value: @user.id %>
+<%= hidden_input f, :post_id, value: @post.id %>
+
+<div class="form-group">
+    <label>Leave a comment</label>
+    <%= textarea f, :content, class: "form-control" %>
+
+</div>
+
+<div class="form-group">
+    <%= submit "Add comment", class: "btn btn-primary" %>
+</div>
+        <% end %>

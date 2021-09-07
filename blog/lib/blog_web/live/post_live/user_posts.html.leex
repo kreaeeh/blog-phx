@@ -1,0 +1,31 @@
+<h1>User's Article</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+<%= live_modal @socket, BlogWeb.PostLive.FormComponent,
+    id: @post.id || :new,
+    title: @page_title,
+    action: @live_action,
+    post: @post,
+    current_user: @current_user,
+    return_to: Routes.post_index_path(@socket, :index) %>
+<% end %>
+<%= if assigns[:current_user] do %>
+<span><strong><%= live_patch "New blog", to: Routes.post_index_path(@socket, :new) %></strong></span>
+<dev id="posts" phx-update="prepend">
+    <%= for post <- @posts do %>
+
+    <%= live_component @socket, BlogWeb.PostLive.PostComponent, id: post.id, post: post, current_user_id: @current_user.id%>
+    <% end %>
+</dev>
+<% end %>
+
+<%= if !assigns[:current_user] do %>
+<span><strong><%= live_patch "New blog", to: Routes.user_session_path(@socket, :new) %></strong></span>
+<dev id="posts" phx-update="prepend">
+    <%= for post <- @posts do %>
+
+    <%= live_component @socket, BlogWeb.PostLive.PostComponent, id: post.id, post: post%>
+    <% end %>
+
+<% end %>
+

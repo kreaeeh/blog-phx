@@ -1,0 +1,31 @@
+<h1>Comments</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, BlogWeb.CommentLive.FormComponent,
+    id: @comment.id || :new,
+    title: @page_title,
+    action: @live_action,
+    comment: @comment,
+    post_id: @post_id,
+    current_user_id: @current_user_id,
+    return_to: Routes.comment_index_path(@socket, :index, @post_id) %>
+<% end %>
+<br><br>
+<span><%= live_patch "Leave a comment", to: Routes.comment_index_path(@socket, :new, @post_id), class: "btn btn-primary" %></span>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<div class="container">
+    <dev id="comments" phx-update="prepend">
+  <%= for comment <- @comments do %>
+  <%= live_component @socket, BlogWeb.CommentLive.CommentComponent, id: comment.id, comment: comment, current_user_id: @current_user_id,post_id: @post_id %>
+  <% end %>
+    </dev>
+</div>
+
+<span><%= live_redirect "Back", to: Routes.post_show_path(@socket, :show, @post_id), class: "btn btn-gray"%></span>
+
+
+
+
+
+

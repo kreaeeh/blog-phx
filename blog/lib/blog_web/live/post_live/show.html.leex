@@ -1,0 +1,18 @@
+<h1>Blog details</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, BlogWeb.PostLive.FormComponent,
+    id: @post.id,
+    title: @page_title,
+    action: @live_action,
+    post: @post,
+    return_to: Routes.post_show_path(@socket, :show, @post) %>
+<% end %>
+
+<strong> Blog Details</strong>
+<%= live_component @socket, BlogWeb.PostLive.PostComponent, id: @post.id, post: @post %>
+
+
+<br>
+<br>
+<span><%= live_redirect "Back", to: Routes.post_index_path(@socket, :index), class: "btn btn-gray"%></span>

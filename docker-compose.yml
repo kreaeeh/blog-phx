@@ -1,0 +1,51 @@
+# Version of docker-compose
+version: '3'
+
+# Containers we are going to run
+services:
+  # Our Phoenix container
+
+  web:
+    # The build parameters for this container.
+    build: .
+    volumes:
+      - ./blog:/blog
+    command: >
+      sh -c "cd assets && npm rebuild node-sass && cd .. && mix ecto.create && mix ecto.migrate && mix run priv/repo/seeds.exs || true && mix phx.server"
+    environment:
+      # Variables to connect to our Mysql server
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: db
+      MYSQL_PORT: 3306
+      # Hostname of our Postgres container
+      MYSQL_HOST: db
+    ports:
+      # Mapping the port to make the Phoenix app accessible outside of the container
+      - "4000:4000"
+    depends_on:
+      # The db container needs to be started before we start this container
+      - db
+
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - /var/lib/mysql
+
